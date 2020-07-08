@@ -1,13 +1,13 @@
 version: '3'
 
 services:
-  samba:
+  at-samba:
     tty: true
     network_mode: bridge
     volumes:
-      - /c/Movies/:/Shared
+      - /mnt/d/Projects/:/Shared
     ports:
       - "445:445"
     build:
-      context: .
+      context: samba/
       dockerfile: Dockerfile
