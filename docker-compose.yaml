@@ -1,13 +1,70 @@
 version: '3'
 
 services:
+  at-rancher:
+    image: rancher/server
+    restart: unless-stopped
+    volumes: 
+      - rancherdb:/var/lib/mysql:Z
+    ports: 
+      - "8080:8080"
+
   at-samba:
-    tty: true
     network_mode: bridge
     volumes:
-      - /mnt/d/Projects/:/Shared
+      - /mnt/data/Movies:/Shared:z
+    restart: unless-stopped
     ports:
+      - "139:139"
       - "445:445"
+      - "137:137/udp"
+      - "138:138/udp"
     build:
       context: samba/
       dockerfile: Dockerfile
+
+  at-netdata:
+    image: netdata/netdata
+    hostname: example.com # set to fqdn of host
+    ports:
+      - 19999:19999
+    restart: unless-stopped
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - netdatalib:/var/lib/netdata
+      - netdatacache:/var/cache/netdata
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+
+  at-plex:
+    image: plexinc/pms-docker
+    network_mode: bridge
+    ports:
+      - "32400:32400/tcp"
+      - "3005:3005/tcp"
+      - "8324:8324/tcp"
+      - "32469:32469/tcp"
+      - "1900:1900/udp"
+      - "32410:32410/udp"
+      - "32412:32412/udp"
+      - "32413:32413/udp"
+      - "32414:32414/udp"
+    env_file:
+      - PLEX.env
+    volumes:
+      - plexdatabase:/config
+      - plextranscode:/transcode
+      - /mnt/data/Movies:/data
+
+volumes:
+  netdatalib:
+  netdatacache:
+  plexdatabase:
+  plextranscode:
+  rancherdb:

@@ -7,6 +7,6 @@ RUN apk add --no-cache --update \
 
 COPY smb.conf /etc/samba/smb.conf
 
-EXPOSE 445/tcp
+EXPOSE 445/tcp 139/tcp 137/udp 138/udp
 
 CMD ["smbd", "--foreground", "--log-stdout", "--no-process-group"]
