@@ -6,7 +6,7 @@
 
 ---
 
-My Personal Home-Media-Coding-Web Server or HMCW Serever or Astatine Server
+My Personal Home-Media-Coding-Web Server or HMCW Server or Astatine Server
 
 - [x] Samba Server
 - [x] Plex Media Server
